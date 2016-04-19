@@ -12,7 +12,7 @@
 // Otherwise, give them a message saying what the correct number was, as well as their list of guesses. )
 
 // random number between 1 and 100
-var getRandomNumber = Math.floor(Math.random() * (101 - 1) + 1);
+var getRandomNumber = Math.floor(Math.random() * 100) + 1;
 console.log(getRandomNumber);
 
 // counter initiation for the function
