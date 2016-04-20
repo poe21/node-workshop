@@ -22,9 +22,10 @@ var splitWord = randomWord.split("");
 console.log(randomWord);
 console.log(splitWord);
 
-var counter = 0;
-var guesses = [];
+var counter = 0; // to know how many wrong tries were made in the game
+var guesses = []; // an array that keeps all the letters guessed by the player
 
+// the drawing that appears according to the number of wrong tries
 function hangmanDrawing(counter) {
     if (counter === 0) {
         console.log("    ___________");
@@ -84,10 +85,13 @@ function hangmanDrawing(counter) {
         console.log("    |");
     }
 }
+
+// this displays an array of underscores according to the length of the random word during a play
 var placeHolder = [];
 splitWord.forEach(function(letter){
             placeHolder.push("_");
-        });
+});
+        
 function hangman(wordsList) {
     var question = [{
         name: "letter",
@@ -95,24 +99,26 @@ function hangman(wordsList) {
     }];
     
     // initiate user prompt
-
     prompt.start();
     prompt.get(question, function(err, result) {
         var guessedLetter = result.letter.toLowerCase();
+        console.log("Your current guess is: " + guessedLetter);
         
         if (splitWord.indexOf(guessedLetter) > -1) {
             placeHolder.splice(splitWord.indexOf(guessedLetter), 1, splitWord[splitWord.indexOf(guessedLetter)]);
-        }
-        
-        console.log("Your current guess is: letter " + guessedLetter);
-        if (splitWord.indexOf(guessedLetter) > -1) {
             console.log("You have found the letter " + guessedLetter + " !");
             hangmanDrawing(counter);
             guesses.push(guessedLetter);
             console.log("The secret word so far is: " + placeHolder);
             console.log("Your guesses so far: " + guesses);
             hangman();
-        } else if ((splitWord.indexOf(guessedLetter) === -1) && counter < 6) {
+        } else if (guessedLetter.length === 0) {
+            console.log("You did not enter a letter. Please try again!");
+            hangmanDrawing(counter);
+            console.log("The secret word so far is: " + placeHolder);
+            console.log("Your guesses so far: " + guesses);
+            hangman();
+        } else if ((splitWord.indexOf(guessedLetter) === -1) && counter < 4 ) {
             console.log("Too bad, " + guessedLetter + " is not in the secret word... Try again!");
             counter++;
             hangmanDrawing(counter);
@@ -120,19 +126,22 @@ function hangman(wordsList) {
             console.log("The secret word so far is: " + placeHolder);
             console.log("Your guesses so far: " + guesses);
             hangman();
-        } else if ((splitWord.indexOf(guessedLetter) === -1) && counter === 6) {
+        } else if ((splitWord.indexOf(guessedLetter) === -1) && counter === 4 ) {
+            console.log("Too bad, " + guessedLetter + " is not in the secret word... This is your last chance!");
+            counter++;
+            hangmanDrawing(counter);
+            guesses.push(guessedLetter);
+            console.log("The secret word so far is: " + placeHolder);
+            console.log("Your guesses so far: " + guesses);
+            hangman();
+        } else if (counter === 5) {
             console.log("You lost!");
+            counter++;
             hangmanDrawing(counter);
             guesses.push(guessedLetter);
             console.log("The secret word so far is: " + placeHolder);
             console.log("Your guesses so far: " + guesses);
             return;
-        } else if (guessedLetter === "") {
-            console.log("You did not enter a letter. Please try again!");
-            hangmanDrawing(counter);
-            console.log("The secret word so far is: " + placeHolder);
-            console.log("Your guesses so far: " + guesses);
-            hangman();
         }
     });
 }
